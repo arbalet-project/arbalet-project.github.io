@@ -14,6 +14,13 @@ let nbColumns = 10;
 let sharedBuffer;
 let sharedArray;
 
+params = new URLSearchParams(window.location.search)
+if (params.has('rows')) {
+    nbRows = parseInt(params.get('rows'));
+}
+if (params.has('cols')) {
+    nbColumns = parseInt(params.get('cols'));
+}
 
 // Functions
 
