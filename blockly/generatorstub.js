@@ -2,6 +2,32 @@
  * @fileoverview This file contains functions used to generate JS code from our custom blocks
  */
 
+
+
+Blockly.JavaScript['note_on_list'] = function(block) {
+    var note = Number(block.getFieldValue('NOTE'));
+    var oct = Number(block.getFieldValue('OCTAVE'));
+    var vel = Blockly.JavaScript.valueToCode(block, 'VELOCITE', Blockly.JavaScript.ORDER_ATOMIC);
+    var value = String(note + 12 * oct);
+    var dataRoute = "http://127.0.0.1:5000/note_on/" + value + "&" + vel;
+    var code = 'req = new XMLHttpRequest(); ';
+    code += 'req.open("GET", "'+ dataRoute + '"); req.send(null);';
+    console.log(code);
+    return code;
+};
+ 
+Blockly.JavaScript['note_off_list'] = function(block) {
+    var note = Number(block.getFieldValue('NOTE'));
+    var oct = Number(block.getFieldValue('OCTAVE'));
+    var vel = 100;
+    var value = String(note + 12 * oct);
+    var dataRoute = "http://127.0.0.1:5000/note_off/" + value + "&" + vel;
+    var code = 'req = new XMLHttpRequest(); ';
+    code += 'req.open("GET", "'+ dataRoute + '"); req.send(null);';
+    console.log(code);
+    return code;
+};
+ 
 Blockly.JavaScript['color_pixel'] = function(block) {
   var value_row = Blockly.JavaScript.valueToCode(block, 'row', Blockly.JavaScript.ORDER_ATOMIC);
   var value_column = Blockly.JavaScript.valueToCode(block, 'column', Blockly.JavaScript.ORDER_ATOMIC);
