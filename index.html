@@ -4,21 +4,21 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Arbalet Meki Live</title>
+    <title id="doc-title"></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="asset/css/style.css">
     <link rel="shortcur icon" type="image/png" href="asset/images/icon.png">
 </head>
 
 <body>
-    
+
         <!-- App Content -->
 
         <div class="main">
             <div class="left-pan">
                 <div class="head-title">
                     <img src="asset/images/icon.png" alt="">
-                    <h1>Arbalet Meki Live</h1>
+                    <h1 id="doc-h1"></h1>
                     <input type="file" name="" id="fileImport" style="display: none">
                 </div>
                 <div id="blocklyDiv" style="height: 100%; width: 100%;">
@@ -30,15 +30,47 @@
 
             <xml xmlns="http://www.w3.org/1999/xhtml" id="toolbox" style="display: none;">
                 <category name="Arbalet" colour="#ff0000">
+                  <block type="pixel_item">
+                    <value name="ROW">
+                      <shadow type="math_number">
+                        <field name="NUM">0</field>
+                      </shadow>
+                    </value>
+                    <value name="COL">
+                      <shadow type="math_number">
+                        <field name="NUM">0</field>
+                      </shadow>
+                    </value>
+                  </block>
+                  <block type="next_pixel">
+                    <value name="pixel">
+                      <shadow type="pixel_item">
+                        <value name="ROW">
+                          <shadow type="math_number">
+                            <field name="NUM">0</field>
+                          </shadow>
+                        </value>
+                        <value name="COL">
+                          <shadow type="math_number">
+                            <field name="NUM">0</field>
+                          </shadow>
+                        </value>
+                      </shadow>
+                    </value>
+                  </block>
                     <block type="color_pixel">
-                      <value name="row">
-                        <shadow type="math_number">
-                          <field name="NUM">0</field>
-                        </shadow>
-                      </value>
-                      <value name="column">
-                        <shadow type="math_number">
-                          <field name="NUM">0</field>
+                      <value name="pixel" >
+                      <shadow type="pixel_item">
+                          <value name="ROW">
+                            <shadow type="math_number">
+                              <field name="NUM">0</field>
+                            </shadow>
+                          </value>
+                          <value name="COL">
+                            <shadow type="math_number">
+                              <field name="NUM">0</field>
+                            </shadow>
+                          </value>
                         </shadow>
                       </value>
                       <value name="color">
@@ -52,17 +84,21 @@
                         <shadow type="colour_picker">
                           <field name="COLOUR">#ff0000</field>
                         </shadow>
-                      </value> 
+                      </value>
                     </block>
                     <block type="turn_off_the_pixel">
-                      <value name="row">
-                        <shadow type="math_number">
-                          <field name="NUM">0</field>
-                        </shadow>
-                      </value>
-                      <value name="column">
-                        <shadow type="math_number">
-                          <field name="NUM">0</field>
+                      <value name="pixel" >
+                      <shadow type="pixel_item">
+                          <value name="ROW">
+                            <shadow type="math_number">
+                              <field name="NUM">0</field>
+                            </shadow>
+                          </value>
+                          <value name="COL">
+                            <shadow type="math_number">
+                              <field name="NUM">0</field>
+                            </shadow>
+                          </value>
                         </shadow>
                       </value>
                     </block>
@@ -70,7 +106,7 @@
                     <block type="var_max_column"></block>
                     <block type="var_max_line"></block>
                 </category>
-                           
+
                 <category name="Logique" colour="#5C81A6">
                   <block type="controls_if"></block>
                   <block type="logic_compare">
@@ -98,7 +134,6 @@
                     <field name="MODE">WHILE</field>
                   </block>
                   <block type="controls_for">
-                    <field name="VAR" id="oy@03Nbv{%V[U/(ND%k0" variabletype="">i</field>
                     <value name="FROM">
                       <shadow type="math_number">
                         <field name="NUM">0</field>
@@ -115,15 +150,36 @@
                       </shadow>
                     </value>
                   </block>
-                  
+
                   <block type="controls_flow_statements" disabled="false">
                     <field name="FLOW">BREAK</field>
                   </block>
                   <block type="sleep">
+                    <value name="time">
+                      <shadow type="math_number">
+                        <field name="NUM">1</field>
+                      </shadow>
+                    </value>
                     <field name="list">'s'</field>
                 </block>
                 </category>
-
+                <category name="Listes" colour="%{BKY_LISTS_HUE}">
+                  <block type="lists_create_empty"></block>
+                  <block type="lists_create_with"></block>
+                  <block type="lists_repeat">
+                    <value name="NUM">
+                      <block type="math_number">
+                        <field name="NUM">5</field>
+                      </block>
+                    </value>
+                  </block>
+                  <block type="lists_length"></block>
+                  <block type="is_in_list"></block>
+                  <block type="lists_isEmpty"></block>
+                  <block type="lists_indexOf"></block>
+                  <block type="lists_getIndex"></block>
+                  <block type="lists_setIndex"></block>
+                </category>
                 <category name="Maths" colour="#5b67a5">
                   <block type="math_number">
                     <field name="NUM">0</field>
@@ -211,14 +267,18 @@
                     </value>
                   </block>
                   <block type="pixel_color">
-                    <value name="row">
-                      <shadow type="math_number">
-                        <field name="NUM">0</field>
-                      </shadow>
-                    </value>
-                    <value name="column">
-                      <shadow type="math_number">
-                        <field name="NUM">0</field>
+                    <value name="pixel" >
+                    <shadow type="pixel_item">
+                        <value name="ROW">
+                          <shadow type="math_number">
+                            <field name="NUM">0</field>
+                          </shadow>
+                        </value>
+                        <value name="COL">
+                          <shadow type="math_number">
+                            <field name="NUM">0</field>
+                          </shadow>
+                        </value>
                       </shadow>
                     </value>
                   </block>
@@ -302,6 +362,22 @@
                         </shadow>
                       </value>
                     </block>
+                    <block type="scrolling_text">
+                      <value name="col">
+                        <shadow type="math_number">
+                          <field name="NUM">0</field>
+                        </shadow>
+                      </value>
+                      <value name="color">
+                        <shadow type="colour_picker">
+                          <field name="COLOUR">#FF0000</field>
+                        </shadow>
+                      </value>
+                      <value name="bgcolor">
+                        <shadow type="colour_picker">
+                          <field name="COLOUR">#000000</field>
+                        </shadow>
+                      </value>
                   </category>
 
                 <category name="Fonctions" colour="#9A5CA6" custom="PROCEDURE"></category>
@@ -314,6 +390,7 @@
                         <a id="file" title="Nouveau"></a>
                         <a id="setting"></a>
                         <div class="setting-menu">
+                          <a id="config">Settings</a>
                           <a id="import">Importer</a>
                           <a id="export">Exporter</a>
                           <a id="example">Exemples</a>
@@ -342,34 +419,34 @@
                         </div>
                         <div>
                             <a id="turn-led" title="Rotation" class="active-rotate-button"></a>
-                            <a id="full-screen" title="Plein Écran"></a>  
+                            <a id="full-screen" title="Plein Écran"></a>
                         </div>
                     </div>
                     <table id="led-table" border="0" cellspacing="0" cellpadding="0">
-                        
-                       
+
+
                     </table>
                 </div>
             </div>
-        
+
         </div>
 
       <!-- End App -->
 
 
     <!-- Modules -->
-        
+
       <!-- Start Module -->
       <div class="overlay-popup">
           <div class="window-popup starting-popup">
               <img src="asset/images/icon.png" alt="">
-              <h1>Bienvenue sur Arbalet Meki Live !</h1>
+              <h1 id="doc-startMod"></h1>
               <div class="input-window">
-                  <input type="text" id="user-name-input" placeholder="Entrez votre nom">
+                  <input type="text" id="user-name-input">
                   <button type="submit" id="send-name"></button>
               </div>
           </div>
-      </div> 
+      </div>
       <!-- End Start module -->
 
       <!-- Modules Background -->
@@ -400,6 +477,10 @@
                         <p>Texte défilant</p>
                         <div class="example-difficulty middle"></div>
                     </a>
+                    <a data-name="parallel.xml" class="example-item">
+                      <p>Drapeau Grec</p>
+                      <div class="example-difficulty middle"></div>
+                    </a>
                     <a data-name="drawByKey.xml" class="example-item">
                         <p>Dessin par touches</p>
                         <div class="example-difficulty hard"></div>
@@ -407,11 +488,38 @@
                     <a data-name="colorShooter.xml" class="example-item">
                       <p>Tir de couleurs</p>
                       <div class="example-difficulty hard"></div>
-                  </a>
+                    </a>
+                    <a data-name="snake_v1.xml" class="example-item">
+                      <p>Snake</p>
+                      <div class="example-difficulty hard"></div>
+                    </a>
                 </div>
               </div>
             </div>
-      <!-- End Example module-->
+      <!-- End Example module -->
+
+      <!-- Setting module -->
+      <div class="window-popup" id="setting-module">
+          <div class="head-popup">
+              <img src="asset/images/icon.png" alt="">
+              <h1>Paramètres de l'application</h1>
+          </div>
+          <div class="content">
+            <p>Nombre de ligne</p>
+            <div class="input-window" id="input-rows">
+            </div>
+            <p>Nombre de colonne</p>
+            <div class="input-window" id="input-cols">
+            </div>
+            <p>Pixels manquants</p>
+            <div class="input-window" id="input-disabled">
+            </div>
+            <div class="input-window">
+              <button type="submit" id="setting-submit"></button>
+            </div>
+          </div>
+      </div>
+      <!-- End Setting module -->
 
       <!-- Export module -->
       <div class="window-popup" id="export-module">
@@ -422,7 +530,7 @@
           <div class="content">
             <p>Entrez le nom de votre projet</p>
             <div class="input-window">
-                <input type="text" id="export-input" value="monProgramme">
+                <input type="text" id="export-input">
                 <button type="submit" id="export-file"></button>
             </div>
           </div>
@@ -433,11 +541,14 @@
       <div class="window-popup" id="informations-module">
           <div class="head-popup">
               <img src="asset/images/icon.png" alt="">
-              <h1>Informations</h1>
+              <div>
+              <h1 id="doc-infoTitle"></h1>
+              <h5 id="version"> VERSION </h5>
+            </div>
           </div>
           <div class="info-content">
-            <p>Arbalet Meki Live est un projet open source développé par les étudiants de la <a href="https://www.iut.u-bordeaux.fr/info/">licence DAWIN</a> de l'IUT informatique de Bordeaux (33). Ce projet fait partie de l'ensemble du <a href="http://www.arbalet-project.org"> projet Arbalet</a></p><br>  
-            <p>L'accès aux sources et aux informations sont disponibles sur le dépot suivant: <a href="https://github.com/arbalet-project/ArbaletMeki">https://github.com/arbalet-project/ArbaletMeki</a></p><br> 
+            <p id="doc-infoMod"></p><br>
+            <p>L'accès aux sources et aux informations sont disponibles sur le dépot suivant: <a href="https://github.com/arbalet-project/ArbaletMeki">https://github.com/arbalet-project/ArbaletMeki</a></p><br>
             <p>Les étudiants ayant participé à la création de cette application sont :</p>
             <div class="info-autor">
               <div>
@@ -475,25 +586,40 @@
                   <a target="_blank" href="https://www.linkedin.com/in/simon-paillassa"></a>
                 </div>
               </div>
+              <div>
+                <p>Alexandre Arnoux</p>
+                <div>
+                  <a target="_blank" href="https://github.com/Roudoudoux"></a>
+                  <a target="_blank" href=""></a>
+                </div>
+              </div>
             </div>
           </div>
       </div>
       <!-- End Information module-->
     <!-- End Modules -->
+    <div id="configModules">
+      <script src="/socket.io/socket.io.js"></script>
+      <script src="/jquery/jquery.js"></script>
+      <script src="/config.js"> </script>
+    </div>
+    <div id="appModules">
+      <script src="/nickname-generator.js"></script>
+      <script src="blockly/blockly_compressed.js"></script>
+      <script src="blockly/javascript_compressed.js"></script>
+      <script src="blockly/blocks_compressed.js"></script>
+      <script src="blockly/msg/js/fr.js"></script>
+      <script src="blockly/blockdefinition.js"></script>
+      <script src="download.js"></script>
+      <script src="/mainClient.js"></script>
+      <script src="/front.js"></script>
+      <script src="blockly/generatorstub.js"></script>
+    </div>
 
-    <script src="blockly/blockly_compressed.js"></script>
-    <script src="blockly/javascript_compressed.js"></script>
-    <script src="blockly/blocks_compressed.js"></script>
-    <script src="blockly/msg/js/fr.js"></script>
-    <script src="blockly/blockdefinition.js"></script>
-    <script src="blockly/generatorstub.js"></script>
-    <script src="download.js"></script>
-
-    
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/jquery/jquery.js"></script>
-    <script src="/mainClient.js"></script>
-    <script src="/front.js"></script>
+<!-- FIX ME mesure -->
+<!-- <script src="/charMap.js"></script>
+<script src="/blocklyWorker.js"></script> -->
+<!-- END FIX ME mesure -->
 
 </body>
 </html>

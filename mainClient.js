@@ -1,28 +1,19 @@
 /**
  * @fileoverview This file contains the application's core functions (client-side on browser)
  */
-
-
-const socket = io();
+const socket = (simulation_enabled ? null : io());
 let granted = false;
 let isRunning = false;
 let updateTimer;
 let pixelsToUpdate = [];
 let blocklyWorker;
-let nbRows = 15;
-let nbColumns = 10;
 let sharedBuffer;
 let sharedArray;
 
-params = new URLSearchParams(window.location.search)
-if (params.has('rows')) {
-    nbRows = parseInt(params.get('rows'));
-}
-if (params.has('cols')) {
-    nbColumns = parseInt(params.get('cols'));
-}
+
 
 // Functions
+
 
 /**
  * Runs the blockly program and launch the grid autoupdate
@@ -30,31 +21,34 @@ if (params.has('cols')) {
 function run() {
     if (!isRunning) {
         updateTimer = setInterval(updateArbalet, 100);
+
         blocklyWorker = new Worker('/blocklyWorker.js');
 
         blocklyWorker.postMessage({
-            message: 'gridLength',
-            nbRows: nbRows,
-            nbColumns: nbColumns
+          message: 'gridLength',
+          nbRows: nbRows,
+          nbColumns: nbColumns
         });
 
-        // Send the different scripts to the worker
         blocklyWorker.postMessage({
-            message: 'scripts',
-            scripts: generateScripts()
+          message: 'scripts',
+          scripts: generateScripts()
         });
 
         blocklyWorker.onmessage = function (event) {
-            if (event.data.message == 'close') {
-                stop();
-            } else {
-                updatePixel(event.data.rowX, event.data.columnY, event.data.color);
+          if (event.data.message == 'close') {
+            stop();
+          } else {
+            if (event.data.log != ""){
+              console.log(event.data.log);
             }
+            updatePixel(event.data.rowX, event.data.columnY, event.data.color);
+          }
 
         };
         // All data sent to the worker, it can run the program
         blocklyWorker.postMessage({
-            message: "run"
+          message: "run"
         });
         isRunning = true;
         switchPlayStopColors();
@@ -81,9 +75,62 @@ function stop() {
 function save(name) {
     let domWorkspace = Blockly.Xml.workspaceToDom(workspace);
     let textWorkSpace = Blockly.Xml.domToText(domWorkspace);
+    let textParam = `<arbalet><param><nbRows>${nbRows}</nbRows><nbColumns>${nbColumns}</nbColumns><disabled>`
+                    + pixmlify(disabled_pixels)
+                    + `</disabled></param><version>${softVersion}</version><blockly>`;
     if (name != null) {
-        download(textWorkSpace, name + '.xml', "application/xml");
+        download(textParam + textWorkSpace + `</blockly></arbalet>`, name + '.xml', "application/xml");
     }
+}
+
+
+function BuildXMLFromString(text) {
+  var message = "";
+  if (window.DOMParser) { // all browsers, except IE before version 9
+    var parser = new DOMParser();
+    try {
+      xmlDoc = parser.parseFromString(text, "text/xml");
+    } catch (e) {
+      // if text is not well-formed,
+      // it raises an exception in IE from version 9
+      console.log("XML parsing error.");
+      return false;
+    };
+  }
+  else {  // Internet Explorer before version 9
+    xmlDoc = CreateMSXMLDocumentObject();
+    if (!xmlDoc) {
+      console.log("Cannot create XMLDocument object");
+      return false;
+    }
+
+    xmlDoc.loadXML(text);
+  }
+
+  var errorMsg = null;
+  if (xmlDoc.parseError && xmlDoc.parseError.errorCode != 0) {
+    errorMsg = "XML Parsing Error: " + xmlDoc.parseError.reason
+    + " at line " + xmlDoc.parseError.line
+    + " at position " + xmlDoc.parseError.linepos;
+  }
+  else {
+    if (xmlDoc.documentElement) {
+      if (xmlDoc.documentElement.nodeName == "parsererror") {
+        errorMsg = xmlDoc.documentElement.childNodes[0].nodeValue;
+      }
+    }
+    else {
+      errorMsg = "XML Parsing Error!";
+    }
+  }
+
+  if (errorMsg) {
+    console.log(errorMsg);
+    return false;
+  }
+
+  console.log("Parsing was successful!");
+  return xmlDoc;
 }
 
 /**
@@ -94,16 +141,40 @@ function importWorkspace() {
     let reader = new FileReader();
     reader.onload = function (event) {
         try {
-            let parsedFile = Blockly.Xml.textToDom(reader.result);
-            Blockly.Xml.clearWorkspaceAndLoadFromXml(parsedFile, workspace);
-            stop();
+          let xmltext = BuildXMLFromString(reader.result);
+          if (!xmltext){
+            throw("error: not an xml");
+          }
+          let racine = xmltext.documentElement;
+          if (racine.nodeName == "arbalet"){
+            var blocklytext = racine.getElementsByTagName("blockly")[0].innerHTML;
+            var docRows = racine.getElementsByTagName("nbRows")[0].innerHTML;
+            var docColumns = racine.getElementsByTagName("nbColumns")[0].innerHTML;
+            if (simulation_enabled){
+              var pixels = pixmlparse(racine.getElementsByTagName("pixel"));
+              setconfig(docRows, docColumns, pixels);
+              createLedTable(docRows, docColumns);
+            } else if (docRows != nbRows || docColumns != nbColumns){
+              throw("error : the dimensions do not match");
+            }
+          }else {
+            var blocklytext = racine.outerHTML;
+          }
+          let blocklyxml = Blockly.Xml.textToDom(blocklytext);
+          Blockly.Xml.clearWorkspaceAndLoadFromXml(blocklyxml, workspace);
+          stop();
         } catch (error) {
-            alert(selectedFile.name + " n'est pas un fichier Arbalet valide");
+          console.log(error);
+          alert(selectedFile.name + " n'est pas un fichier Arbalet valide");
         }
     };
     reader.readAsText(selectedFile);
 }
 
+/**
+ * Try to load an example file in the workspace
+ * @param {String} fileName the example file name
+ */
 function loadExemple(fileName){
     $.ajax({
         method: 'GET',
@@ -119,7 +190,7 @@ function loadExemple(fileName){
  * Update the material Arbalet pixel grid if granted
  */
 function updateArbalet() {
-    if (pixelsToUpdate.length != 0 && granted) {
+    if (pixelsToUpdate.length != 0 && granted && !simulation_enabled) {
         socket.emit('updateGrid', pixelsToUpdate);
         pixelsToUpdate = [];
     }
@@ -160,14 +231,31 @@ function generateScripts() {
         scripts[key] = functionsDefinition + code;
         noEventProgram = false;
     });
-
-    scripts["main"] = functionsDefinition + Blockly.JavaScript.blockToCode(
-        Blockly.mainWorkspace.getBlocksByType("main_script")[0]);
-    if(noEventProgram){
-        scripts["main"] += 'self.postMessage({message: "close"});close();' ;
+    let ind = 0;
+    if (Blockly.mainWorkspace.getBlocksByType("main_script").length > 1){
+      let mains = "";
+      for (var submain of Blockly.mainWorkspace.getBlocksByType("main_script")){
+        mains += `async function main${ind}(){\n await sleep(10, 'ms');` +
+                        functionsDefinition + Blockly.JavaScript.blockToCode(submain) +
+                        `}\n `;
+        ind += 1;
+      }
+      let mainm = "await Promise.all([";
+      for (let j = 0; j < ind-1 ; j++){
+        mainm += `main${j}(),`;
+      }
+      mainm += `main${ind-1}()`;
+      scripts["main"] = mains + mainm + "]);";
+    } else {
+      scripts["main"] = "async function main(){" +
+                      functionsDefinition +
+                      Blockly.JavaScript.blockToCode(Blockly.mainWorkspace.getBlocksByType("main_script")[0]) +
+                      "} await main();";
+    }
+    if(noEventProgram ){
+      scripts["main"] += 'self.postMessage({message: "close"});close();' ;
     }
     return scripts;
-    
 }
 
 /**
@@ -187,12 +275,16 @@ function generateFunctions() {
     });
 
     // Variables declarations are deleted, so they will be global and shared between the main script and event scripts
-    delete Blockly.JavaScript.definitions_.variables;
+    if (Blockly.mainWorkspace.getBlocksByType("event_key").length > 0){
+      delete Blockly.JavaScript.definitions_.variables;
+    }
 
     let arrayFunctions = Object.values(Blockly.JavaScript.definitions_);
     arrayFunctions = arrayFunctions.map((x) => {
-        if(x != ''){
+        if(x != '' && x.substr(0,3) != 'var'){
             return 'async ' + x;
+        } else if (x.substr(0,3) == 'var'){
+          return x;
         }
     });
 

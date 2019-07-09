@@ -2,30 +2,14 @@
  * @fileoverview This file contains all the graphical functions and event manager that work with the interface (client-side on browser)
  * @see mainClient.js
  */
-
+let name = "";
+document.getElementById('user-name-input').value = generateNickname();
+document.getElementById('version').innerHTML += softVersion;
 let workspace;
 
-createLedTable(nbRows, nbColumns);
+createLedTable(nbRows, nbColumns, disabled_pixels);
 initWorkspace();
-
-// Management of the received messages on websockets
-
-socket.on('logged',(user) => {
-    $('#user-name').text(user.name);
-    $('#user-ip').text(user.ip);
-    //hideLoginScreen();
-    $('.overlay-popup').hide();
-});
-
-socket.on('granted', function () {
-    granted = true;
-    $('.connect-style').replaceWith('<p class="connect-style live">live</p>');
-});
-
-socket.on('ungranted', function () {
-    granted = false;
-    $('.live').replaceWith('<p class="connect-style">Connecté au poste</p>');
-});
+configSocket();
 
 // Event keys for Blockly, stores the corresponding event in a sharedArray to be read by the worker
     $(document).on('keydown', function (e) {
@@ -63,12 +47,40 @@ $('#stop').on('click', function (e) {
     stop();
 });
 
+$('#config').on('click', function (e) {
+  e.preventDefault();
+  settingForm();
+  $('.overlay-popup3').fadeIn(200);
+  $("#setting-module").fadeIn(200, function () {
+    $('#setting-submit').on('click', function () {
+      if (simulation_enabled){
+        if (setconfig($('#setting-rows').val(), $('#setting-cols').val(), $('#setting-disabled').val())){
+          createLedTable(nbRows, nbColumns);
+          $('#setting-module').fadeOut(200);
+          $('.overlay-popup3').fadeOut(200);
+        } else {
+          alert("invalid arguments");
+        }
+      } else{
+        $('#setting-module').fadeOut(200);
+        $('.overlay-popup3').fadeOut(200);
+      }
+    })
+  })
+})
+
 $('#import').on('click', function (e) {
     e.preventDefault();
+    if (Blockly.mainWorkspace.getAllBlocks().length > 1){
+      if (!confirm('Êtes vous sûr(e) de vouloir continuer ?')){
+        return;
+      }
+    }
     $('#fileImport').click();
 });
 
 $('#export').on('click', function () {
+    document.getElementById('export-input').value = name.replace(' ', '') + ".xml";
     $('.overlay-popup3').fadeIn(200);
     $("#export-module").fadeIn(200, function () {
         $('#export-file').on('click', function () {
@@ -96,6 +108,11 @@ $('#example').on('click', function () {
 });
 
 $('#file').on('click',function(){
+  if (Blockly.mainWorkspace.getAllBlocks().length > 1){
+    if (!confirm('Êtes vous sûr(e) de vouloir continuer ?')){
+      return;
+    }
+  }
     workspace.clear();
     let mainBlock = workspace.newBlock('main_script');
     mainBlock.initSvg();
@@ -117,6 +134,7 @@ $('.overlay-popup3').on('click', function () {
     $(this).fadeOut(200, function () {
         $('#example-module').fadeOut(200)
         $('#export-module').fadeOut(200)
+        $('#setting-module').fadeOut(200)
         $('#informations-module').fadeOut(200)
         $('#challenges-module').fadeOut(200)
     })
@@ -130,14 +148,18 @@ $('#full-screen').on('click', function (e) {
 $('.setting-menu').hover(function () {
     $('.info-user').fadeOut(200);
 }, function () {
+  if (!simulation_enabled){
     $('.info-user').fadeIn(200);
+  }
 });
 
 $('#send-name').on('click', function () {
-    var name = $('#user-name-input').val()
+    name = $('#user-name-input').val()
     if(name != ""){
         hideLoginScreen();
+        if (! simulation_enabled){
         socket.emit('login', name);
+      }
     }
 });
 
@@ -199,19 +221,39 @@ function initWorkspace() {
 }
 
 /**
+ * Tells if the i,j pixel is disabled
+ * @param {Number} row
+ * @param {Number} column
+ */
+function is_disabled(i,j){
+  for (let pos of disabled_pixels) {
+    if ((pos[0] == i) && (pos[1] == j)){
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
  * Generate the HTML table of the pixels for the simulation
- * @param {Number} nbRows 
- * @param {Number} nbColumns 
+ * @param {Number} nbRows
+ * @param {Number} nbColumns
  */
 function createLedTable(nbRows, nbColumns) {
     let ledContainer = document.getElementById('led-table');
+    ledContainer.innerHTML = "";
     for (let i = 0; i < nbRows; i++) {
         let newRow = ledContainer.insertRow();
         for (let j = 0; j < nbColumns; j++) {
-            newRow.insertCell(j).innerHTML = `<div class="led" data-r="${i}" data-c="${j}" title="[${i},${j}]"></div>`;
+          if (is_disabled(i, j)) {
+            newRow.insertCell(j).innerHTML = `<div class="dled" data-r="${i}" data-c="${j}"></div>`;
+          } else {
+            newRow.insertCell(j).innerHTML = `<div class="led" data-r="${i}" data-c="${j}"><span>[${i},${j}]</span></div>`;
+          }
         }
     }
 }
+
 /**
  * Toogle the full-screen mode of the simulation
  */

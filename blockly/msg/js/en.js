@@ -6,15 +6,23 @@ goog.provide('Blockly.Msg.en');
 
 goog.require('Blockly.Msg');
 //Color pixel
-Blockly.Msg["COLOR_PIXEL_TITLE"] = "Set the pixel %1 %2 to %3";
+Blockly.Msg["COLOR_PIXEL_TITLE"] = "Set %1 to %2";
 Blockly.Msg["COLOR_PIXEL_TOOLTIP"] = "Add a row and a column, then the color";
+
+//Pixel item
+Blockly.Msg["PIXEL_TITLE"] = "Pixel %1 %2";
+Blockly.Msg["PIXEL_TOOLTIP"] = "Define a pixel by its row and column numbers";
+
+// Next pixel
+Blockly.Msg["NEXT_PIXEL_TITLE"] = "Pixel %1 of %2";
+Blockly.Msg["NEXT_PIXEL_TOOLTIP"] = "Returns the pixel next to the one given (up, down, right or left)";
 
 //Color all pixels
 Blockly.Msg["COLOR_ALL_PIXELS_TITLE"] = "Set all pixels in %1";
 Blockly.Msg["COLOR_ALL_PIXELS_TOOLTIP"] = "Click on the color picker to choose a color";
 
-//Turn off the pixel 
-Blockly.Msg["TURN_OFF_THE_PIXEL_TITLE"] = "Turn off the pixel in %1 %2";
+//Turn off the pixel
+Blockly.Msg["TURN_OFF_THE_PIXEL_TITLE"] = "Turn off the %1";
 Blockly.Msg["TURN_OFF_THE_PIXEL_TOOLTIP"] = "Choose a row and a column";
 
 //Turn off
@@ -34,8 +42,12 @@ Blockly.Msg["SLEEP_TITLE"] = "Wait %1 %2";
 Blockly.Msg["SLEEP_TOOLTIP"] = "Choose time and its unity";
 
 //Pixel color
-Blockly.Msg["PIXEL_COLOR_TITLE"] = "Pixel color %1 %2";
+Blockly.Msg["PIXEL_COLOR_TITLE"] = "Get pixel %1 color";
 Blockly.Msg["PIXEL_COLOR_TOOLTIP"] = "Choose a row and a column";
+
+//Scrolling text
+Blockly.Msg["SCROLL_TITLE"] = "Scroll %1 above %2 column in color %3 on %4";
+Blockly.Msg["SCROLL_TOOLTIP"] = "scroll the text above the indicated column in color on background";
 
 Blockly.Msg["ADD_COMMENT"] = "Add Comment";
 Blockly.Msg["CANNOT_DELETE_VARIABLE_PROCEDURE"] = "Can't delete the variable '%1' because it's part of the definition of the function '%2'";

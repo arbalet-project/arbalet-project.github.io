@@ -6,17 +6,25 @@ goog.provide('Blockly.Msg.fr');
 
 goog.require('Blockly.Msg');
 
-//Ajout des blocs personnalisés 
+//Ajout des blocs personnalisés
 //Color pixel
-Blockly.Msg["COLOR_PIXEL_TITLE"] = "Colorer le pixel %1 %2 en %3";
+Blockly.Msg["COLOR_PIXEL_TITLE"] = "Colorer  %1 en %2";
 Blockly.Msg["COLOR_PIXEL_TOOLTIP"] = "Ajouter une ligne et une colonne, puis une couleur";
+
+//Pixel item
+Blockly.Msg["PIXEL_TITLE"] = " Pixel %1 %2";
+Blockly.Msg["PIXEL_TOOLTIP"] = "Définir un pixel par sa ligne et sa colonne";
+
+// Next pixel
+Blockly.Msg["NEXT_PIXEL_TITLE"] = "Pixel %1 de %2";
+Blockly.Msg["NEXT_PIXEL_TOOLTIP"] = "Renvoie le pixel à coté de celui donné (en haut, en bas, à gauche ou à droite)";
 
 //Color all pixels
 Blockly.Msg["COLOR_ALL_PIXELS_TITLE"] = "Colorer tous les pixels en %1";
 Blockly.Msg["COLOR_ALL_PIXELS_TOOLTIP"] = "Choisir une couleur en cliquant";
 
-//Turn off the pixel 
-Blockly.Msg["TURN_OFF_THE_PIXEL_TITLE"] = "Eteindre le pixel en %1 %2";
+//Turn off the pixel
+Blockly.Msg["TURN_OFF_THE_PIXEL_TITLE"] = "Eteindre %1";
 Blockly.Msg["TURN_OFF_THE_PIXEL_TOOLTIP"] = "Ajouter une ligne et une colonne";
 
 //Turn off
@@ -36,8 +44,13 @@ Blockly.Msg["SLEEP_TITLE"] = "Attendre %1 %2";
 Blockly.Msg["SLEEP_TOOLTIP"] = "Choisir un temps et son unité de mesure";
 
 //Pixel color
-Blockly.Msg["PIXEL_COLOR_TITLE"] = "Couleur du pixel en %1 %2";
+Blockly.Msg["PIXEL_COLOR_TITLE"] = "Couleur de %1";
 Blockly.Msg["PIXEL_COLOR_TOOLTIP"] = "Ajouter une ligne et une colonne";
+
+//Scrolling text
+Blockly.Msg["SCROLL_TITLE"] = "Faire défiler %1 depuis la colonne %2 en %3 sur fond %4";
+Blockly.Msg["SCROLL_TOOLTIP"] = "Fais défiler le texte en prennant la colonne comme point d'appui";
+
 
 Blockly.Msg["ADD_COMMENT"] = "Ajouter un commentaire";
 Blockly.Msg["CANNOT_DELETE_VARIABLE_PROCEDURE"] = "Impossible de supprimer la variable '%1' parce qu’elle fait partie de la définition de la fonction '%2'";

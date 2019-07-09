@@ -3,12 +3,27 @@
  */
 
 Blockly.JavaScript['color_pixel'] = function(block) {
-  var value_row = Blockly.JavaScript.valueToCode(block, 'row', Blockly.JavaScript.ORDER_ATOMIC);
-  var value_column = Blockly.JavaScript.valueToCode(block, 'column', Blockly.JavaScript.ORDER_ATOMIC);
+  //workspace.getAllVariables();
+  var pixel = Blockly.JavaScript.valueToCode(block, 'pixel', Blockly.JavaScript.ORDER_NONE);
   var value_color = Blockly.JavaScript.valueToCode(block, 'color', Blockly.JavaScript.ORDER_ATOMIC);
-
-  var code = `setPixel(${value_row},${value_column},${value_color});`;
+  var code = `setPixel(${pixel},${value_color});`;
   return code;
+};
+
+Blockly.JavaScript['pixel_item'] = function(block) {
+  var value_row = Blockly.JavaScript.valueToCode(block, 'ROW', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_col = Blockly.JavaScript.valueToCode(block, 'COL', Blockly.JavaScript.ORDER_ATOMIC);
+  var code = `{'r':${value_row}, 'c':${value_col}}`;
+  return [code,  Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.JavaScript['next_pixel'] = function(block) {
+  var dropdown_position = block.getFieldValue('position');
+  var value_pixel = Blockly.JavaScript.valueToCode(block, 'pixel', Blockly.JavaScript.ORDER_ATOMIC);
+
+  var code = `nextPixel(${value_pixel}, ${dropdown_position})`;
+  // console.log(eval(code));
+  return [code, Blockly.JavaScript.ORDER_NONE];
 };
 
 Blockly.JavaScript['color_all_pixels'] = function(block) {
@@ -26,38 +41,36 @@ Blockly.JavaScript['turn_off'] = function(block) {
 
 
 Blockly.JavaScript['turn_off_the_pixel'] = function(block) {
-  var value_row = Blockly.JavaScript.valueToCode(block, 'row', Blockly.JavaScript.ORDER_ATOMIC);
-  var value_column = Blockly.JavaScript.valueToCode(block, 'column', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_pixel = Blockly.JavaScript.valueToCode(block, 'pixel', Blockly.JavaScript.ORDER_ATOMIC);
 
-  var code = `switchOffPixel(${value_row},${value_column});`;
+  var code = `switchOffPixel(${value_pixel});`;
   return code;
 };
 
 Blockly.JavaScript['var_max_column'] = function(block) {
 
-  var code = 'nbColumns - 1';
+  var code = `${nbColumns - 1}`;
 
   return [code, Blockly.JavaScript.ORDER_NONE];
 };
 
 Blockly.JavaScript['var_max_line'] = function(block) {
-  var code = 'nbRows - 1';
+  var code = `${nbRows - 1}`;
   return [code, Blockly.JavaScript.ORDER_NONE];
 };
 
 Blockly.JavaScript['sleep'] = function(block) {
-  var text_time = block.getFieldValue('time');
+  var text_time = Blockly.JavaScript.valueToCode(block, 'time', Blockly.JavaScript.ORDER_ATOMIC);
   var dropdown_list = block.getFieldValue('list');
-
   var code = `await sleep(${text_time},${dropdown_list});`;
+  // var code = `sleep(${text_time},${dropdown_list});`;
   return code;
 };
 
 Blockly.JavaScript['pixel_color'] = function(block) {
-  var value_row = Blockly.JavaScript.valueToCode(block, 'row', Blockly.JavaScript.ORDER_ATOMIC);
-  var value_column = Blockly.JavaScript.valueToCode(block, 'column', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_pixel = Blockly.JavaScript.valueToCode(block, 'pixel', Blockly.JavaScript.ORDER_ATOMIC);
 
-  var code = `getPixelColor(${value_row},${value_column})`;
+  var code = `getPixelColor(${value_pixel})`;
 
   return [code, Blockly.JavaScript.ORDER_NONE];
 };
@@ -122,4 +135,35 @@ Blockly.JavaScript['math_random_int'] = function(block) {
       Blockly.JavaScript.ORDER_COMMA) || '0';
   var code = `mathRandomInt(${argument0},${argument1})`;
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
+};
+
+Blockly.JavaScript['is_in_list'] = function(block) {
+  var value_item = Blockly.JavaScript.valueToCode(block, 'ITEM', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_list = Blockly.JavaScript.valueToCode(block, 'LIST', Blockly.JavaScript.ORDER_ATOMIC);
+
+  var code = `isInList(${value_item}, ${value_list})`;
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.JavaScript['scrolling_text'] = function(block) {
+  var text_name = block.getFieldValue('text');
+  var value_name = Blockly.JavaScript.valueToCode(block, 'col', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_color = Blockly.JavaScript.valueToCode(block, 'color', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_font = Blockly.JavaScript.valueToCode(block, 'bgcolor', Blockly.JavaScript.ORDER_ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+  var code = `await scrollingText("${text_name}", ${value_name}, ${value_color}, ${value_font});\n`;
+  return code;
+};
+
+Blockly.JavaScript['procedures_callnoreturn'] = function(block) {
+  // Call a procedure with no return value.
+  var funcName = Blockly.JavaScript.variableDB_.getName(
+      block.getFieldValue('NAME'), Blockly.Procedures.NAME_TYPE);
+  var args = [];
+  for (var i = 0; i < block.arguments_.length; i++) {
+    args[i] = Blockly.JavaScript.valueToCode(block, 'ARG' + i,
+        Blockly.JavaScript.ORDER_COMMA) || 'null';
+  }
+  var code = 'await ' +funcName + '(' + args.join(', ') + ');\n';
+  return code;
 };
