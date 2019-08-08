@@ -9,7 +9,49 @@ let workspace;
 
 createLedTable(nbRows, nbColumns, disabled_pixels);
 initWorkspace();
-configSocket();
+
+/**
+ * Display informations relative to backend only if a backend is connected
+ */
+if(!simulation_enabled){
+  socket.on('logged',(user) => {
+      $('#user-name').text(user.name);
+      $('#user-ip').text(user.ip);
+      //hideLoginScreen();
+      lastbeacon = (new Date()).getTime();
+      $('.overlay-popup').hide();
+  });
+
+  socket.on('granted', function () {
+      granted = true;
+      $('.connect-style').replaceWith('<p class="connect-style live">live</p>');
+  });
+
+  socket.on('ungranted', function () {
+      granted = false;
+      $('.live').replaceWith('<p class="connect-style">Connecté</p>');
+  });
+
+  socket.on('isAlive', function () {
+    lastbeacon = (new Date()).getTime();
+    socket.emit('isAlive');
+    console.log("isAlive replied");
+  });
+
+  function beaconChecker() {
+    console.log("beanconChecker");
+    if ( (lastbeacon != null) && (new Date()).getTime() - lastbeacon > 3000){
+      granted = false;
+      $('.connect-style').replaceWith('<p class="connect-style">Déconnecté</p>');
+    }
+  }
+
+  setInterval(beaconChecker, 1000);
+} else {
+  $('.info-user').css({
+      "display": 'none'
+  });
+}
 
 // Event keys for Blockly, stores the corresponding event in a sharedArray to be read by the worker
     $(document).on('keydown', function (e) {
@@ -72,7 +114,7 @@ $('#config').on('click', function (e) {
 $('#import').on('click', function (e) {
     e.preventDefault();
     if (Blockly.mainWorkspace.getAllBlocks().length > 1){
-      if (!confirm('Êtes vous sûr(e) de vouloir continuer ?')){
+      if (!confirm('Vous allez perdre votre travail. Êtes vous sûr(e) de vouloir continuer ?')){
         return;
       }
     }
@@ -80,7 +122,7 @@ $('#import').on('click', function (e) {
 });
 
 $('#export').on('click', function () {
-    document.getElementById('export-input').value = name.replace(' ', '') + ".xml";
+    document.getElementById('export-input').value = name.replace(' ', '_');
     $('.overlay-popup3').fadeIn(200);
     $("#export-module").fadeIn(200, function () {
         $('#export-file').on('click', function () {
@@ -109,7 +151,7 @@ $('#example').on('click', function () {
 
 $('#file').on('click',function(){
   if (Blockly.mainWorkspace.getAllBlocks().length > 1){
-    if (!confirm('Êtes vous sûr(e) de vouloir continuer ?')){
+    if (!confirm('Vous allez perdre votre travail. Êtes vous sûr(e) de vouloir continuer ?')){
       return;
     }
   }
@@ -172,6 +214,7 @@ $('#user-name-input').keypress(function (event) {
 $('#turn-led').on('click', function(e){
     e.preventDefault();
     $('#led-table').toggleClass('active-rotate');
+    $('.led-coords').toggleClass('active-rotate-revert');
     $(this).toggleClass('active-rotate-button');
 });
 
@@ -248,7 +291,7 @@ function createLedTable(nbRows, nbColumns) {
           if (is_disabled(i, j)) {
             newRow.insertCell(j).innerHTML = `<div class="dled" data-r="${i}" data-c="${j}"></div>`;
           } else {
-            newRow.insertCell(j).innerHTML = `<div class="led" data-r="${i}" data-c="${j}"><span>[${i},${j}]</span></div>`;
+            newRow.insertCell(j).innerHTML = `<div class="led" data-r="${i}" data-c="${j}"><div class="led-coords"><p>Ligne ${i}</p><p>Colonne ${j}</p></div></div>`;
           }
         }
     }

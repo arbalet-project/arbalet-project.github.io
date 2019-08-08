@@ -1,7 +1,7 @@
 /**
  * @fileoverview This file contains the setting application's handler
  */
- const softVersion = "1.1.0";
+ const softVersion = "1.1.1";
 
 let config= {};
 getconfig();
@@ -10,7 +10,7 @@ let nbRows = config["rows"];
 let nbColumns = config["cols"];
 let project = config["project"];
 let language = config["language"];
-let simulation_enabled = config["simuation"];
+let simulation_enabled = config["simulation"];
 let disabled_pixels = config["disabled"];
 configName();
 
@@ -49,7 +49,7 @@ function getconfig() {
  */
 function valid(pixelsarray, nr, nc){
   try {
-    let array = eval(pixelsarray);
+    let array = JSON.parse(pixelsarray);
     for (var tmp of array){
       if (tmp[0] < 0 || tmp[0] >= nr || tmp[1] < 0 || tmp[1] >= nc){
         return false;
@@ -73,8 +73,7 @@ function setconfig(nr, nc, dpixels){
   }
   nbRows = nr;
   nbColumns = nc;
-  let dpjson = `{"dp":`+ JSON.stringify(dpixels) +`}`;
-  disabled_pixels = JSON.parse(dpjson)['dp'];
+  disabled_pixels = JSON.parse(dpixels);
   return true;
 }
 
@@ -104,19 +103,8 @@ function configName(){
   document.getElementById('doc-title').innerHTML = `Arbalet ${project} Live`;
   document.getElementById('doc-h1').innerHTML = `Arbalet ${project} Live`;
   document.getElementById('doc-startMod').innerHTML = `Bienvenue sur Arbalet ${project} Live !`;
-  document.getElementById('doc-infoMod').innerHTML = `Arbalet ${project} Live est un projet open source développé par les étudiants de la <a href="https://www.iut.u-bordeaux.fr/info/">licence DAWIN</a> de l'IUT informatique de Bordeaux (33). Ce projet fait partie de l'ensemble du <a href="http://www.arbalet-project.org"> projet Arbalet</a>`
+  document.getElementById('doc-infoMod').innerHTML = `Arbalet ${project} Live est un projet opensource développé par les membres d'Arbalet Living Lab pour le <a href="http://www.arbalet-project.org">projet Arbalet</a>`
 }
-
-function configSocket(){
-  if(!simulation_enabled){
-    import("/socketHandler.js");
-  } else {
-    $('.info-user').css({
-        "display": 'none'
-    });
-  }
-}
-
 
 /**
  * Build the setting formular by displaying the current value in the form fields
@@ -127,17 +115,8 @@ function settingForm() {
   } else {
     var disabled = ``;
   }
-  document.getElementById('input-rows').innerHTML = `<input type="number" id="setting-rows" value=${nbRows} ` + disabled + ` />`;
-  document.getElementById('input-cols').innerHTML = `<input type="number" id="setting-cols" value=${nbColumns} ` + disabled + ` />`;
-  let msg = "[";
-  let dummyVar = 0;
-  for (let pix of disabled_pixels){
-    if (dummyVar != 0) {
-      msg += ", ";
-    }
-    msg += "[" + pix[0] + "," + pix[1] + "]";
-    dummyVar += 1;
-  }
-  msg += "]";
+  document.getElementById('input-rows').innerHTML = `<input type="number" id="setting-rows" min="1" max="20" value=${nbRows} ` + disabled + ` />`;
+  document.getElementById('input-cols').innerHTML = `<input type="number" id="setting-cols" min="1" max="20" value=${nbColumns} ` + disabled + ` />`;
+  let msg = JSON.stringify(disabled_pixels);
   document.getElementById('input-disabled').innerHTML = `<input type="text" id="setting-disabled" value="${msg}" ` + disabled + ` />`;
 }
