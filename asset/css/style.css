@@ -171,15 +171,18 @@ body {
     height: 75px;
     align-items: flex-end;
     margin-bottom: 35px; }
-    .right-pan .head-menu > a {
+    .right-pan .head-menu a#file {
+      background-image: url("../images/icon/file.png");
       background-size: contain;
       width: 18px;
       height: 18px;
       opacity: .7; }
-    .right-pan .head-menu a#file {
-      background-image: url("../images/icon/file.png"); }
     .right-pan .head-menu a#setting {
       background-image: url("../images/icon/setting.png");
+      background-size: contain;
+      width: 62px;
+      height: 62px;
+      opacity: .7;
       cursor: pointer; }
   .right-pan .info-user > div {
     margin-bottom: 25px; }
@@ -248,7 +251,6 @@ body {
     position: absolute;
     margin: 2px;
     top: 0;
-    cursor: help;
     bottom: 0;
     left: 0;
     right: 0;
@@ -263,13 +265,12 @@ body {
 .setting-menu {
   visibility: hidden;
   position: absolute;
-  z-index: 50000;
   width: 100%;
   top: 90px;
   left: 0;
   border-top: 1px solid #252C34;
   opacity: 0;
-  transition: visibility 0s, opacity 0.2s linear; }
+  transition: visibility 0s, opacity 0.5s linear; }
   .setting-menu a {
     display: block;
     padding: 20px 45px;
@@ -277,7 +278,7 @@ body {
     background-color: #1B2024;
     color: #D5D4D3; }
     .setting-menu a:hover {
-      transform: scale(1);
+      transform: scale(0.5);
       background-color: #252C34; }
   .setting-menu::before {
     content: '';
@@ -307,7 +308,9 @@ body {
 
 #setting:hover ~ .setting-menu, .setting-menu:hover {
   visibility: visible;
-  opacity: 1; }
+  opacity: 1;
+  width: 100%;
+  height: 100%; }
 
 .overlay-popup, .overlay-popup2, .overlay-popup3 {
   position: fixed;
@@ -365,16 +368,6 @@ body {
     font-family: 'Raleway', sans-serif;
     font-weight: 600;
     border-radius: 11px; }
-    .input-window input[type=number] {
-      background-color: #252C34;
-      border: none;
-      padding: 10px 30px 10px 20px;
-      text-align: center;
-      caret-color: #D5D4D3;
-      color: #D5D4D3;
-      font-family: 'Raleway', sans-serif;
-      font-weight: 600;
-      border-radius: 11px; }
     .input-window input[type=text]:focus {
       outline: none; }
   .input-window button[type=submit] {
@@ -478,11 +471,6 @@ body {
 .full-screen .led-header a#full-screen {
   background-image: url("../images/icon/close.png"); }
 
-  #version {
-    color: #FFFFFF;
-    line-height: 16px;
-    text-align: left; }
-
 #informations-module {
   display: none; }
   #informations-module .info-content {
@@ -517,44 +505,4 @@ body {
             #informations-module .info-content .info-autor > div > div a:last-child {
               background-image: url("../images/icon/linkedin.png"); }
 
-
-/* Display the pixel position in a infobulle*/
-.led span
-{
-  visibility: hidden;
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  width: 60px;
-  margin-left: 0px;
-  padding: 1px;
-  border: 0px solid #CCC;
-  opacity: .9;
-  background-color: #9F9696;
-  border-radius: 4px;
-  z-index: 5000;
-}
-
-.led:hover
-{
-  border: 0; /* IE6 fix */
-}
-
-.led:hover span
-{
-  visibility: visible;
-}
-
-.led span:before,
-.led span:after
-{
-  content: "";
-  position: relative;
-  left: 25%;
-}
-
-.led span:before
-{
-  border-top-color: #ccc;
-}
 /*# sourceMappingURL=style.css.map */
